@@ -71,7 +71,28 @@ begin
 		leerP(productoActual);
 	end;
 end;
+procedure imprimirV(v: vProductos);
+var
+	i: rubro;
 begin
-
+	for i:= 1 to 6 do begin
+		if(v[i] = nil) then begin
+			writeln('el rubro numero: ', i, 'no tiene productos asociados');
+		end
+		else begin
+			while(v[i] <> nil) do begin
+				writeln(v[i]^.ele.codigo);
+				v[i]:= v[i]^.sig;
+			end;
+		end;
+	end;
+	
+end;
+var
+	vectorProductos: vProductos;
+begin
+	crearV(vectorProductos);
+	cargarV(vectorProductos);
+	imprimirV(vectorProductos);
 end.
 
