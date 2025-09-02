@@ -16,6 +16,7 @@ type
 		sig: listaProductos;
 	end;
 	vProductos = array [rubro] of listaProductos;
+	vRubroTres = array [1..20] of productoAGuardar;
 procedure crearV(var v: vProductos);
 var 
 	i: rubro;
@@ -88,11 +89,67 @@ begin
 	end;
 	
 end;
+procedure cargarNuevoV(vectorP: vProductos; var v: vRubroTres; var dimL: integer);
+begin
+	dimL:= 0;
+	if not(vectorP[3] = nil) then begin
+		while ((vectorP[3] <> nil) and (dimL < 20)) do begin
+			dimL:= dimL + 1;
+			v[dimL]:= vectorP[3]^.ele;
+			vectorP[3]:= vectorP[3]^.sig;
+		end;
+	end;
+end;
+procedure ordenarV(v: vRubroTres; dimL: integer);
+var
+	i, j, pos: integer;
+	item: productoAGuardar;
+begin
+	for i:= 1 to dimL -1 do begin
+		pos:= i;
+		for j:= i + 1 to dimL do begin
+			if( v[j].precio < v[i].precio) then begin
+				pos:= j;
+			end;
+		end;
+		item:= v[pos];
+		v[j]:= v[i];
+		v[i]:= item;
+	end;
+end;
+procedure imprimirV(v: vRubroTres; dimL : integer);
+var
+	i: integer;
+begin
+	for i:= 1 to dimL do begin
+		writeln(v[i].precio);
+	end;
+end;
+function calcularPromedio(v: vRubroTres; dimL: integer): real;
+var 
+	cantP: integer;
+	total: real;
+	i: integer;
+begin
+	cantP:= 0;
+	total:= 0;
+	for i:= 1 to dimL do begin
+		cantP:= cantP + 1;
+		total:= total + v[i].precio;
+	end;
+	calcularPromedio:= total / cantP;
+end;
 var
 	vectorProductos: vProductos;
+	vectorRubro: vRubroTres;
+	dimL: integer;
 begin
 	crearV(vectorProductos);
 	cargarV(vectorProductos);
 	imprimirV(vectorProductos);
+	cargarNuevoV(vectorProductos, vectorRubro, dimL);
+	ordenarV(vectorRubro, dimL);
+	imprimirV(vectorRubro, dimL);
+	writeln(calcularPromedio(vectorRubro,dimL));
 end.
 
