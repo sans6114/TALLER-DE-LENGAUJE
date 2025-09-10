@@ -69,7 +69,7 @@ begin
 		new(a);
 		a^.ele.legajo:= f.legajo;
 		a^.ele.lista:= nil;
-		a^.ele.lista:= agregarL(a^.ele.lista, f);
+		agregarL(a^.ele.lista, f);
 	end
 	else begin
 		if(f.legajo = a^.ele.legajo) then begin
@@ -83,9 +83,56 @@ begin
 		end;
 	end;
 end;
+procedure cantidadLegajoImpar(a: arbol; var c: integer);
+begin
+	if(a <> nil) then begin
+		if(esLegajoImpar(a^.ele.legajo)) then begin
+			c:= c + 1;
+		end;
+		cantidadLegajoImpar(a^.HI, c);
+		cantidadLegajoImpar(a^.HD, c);
+	end
+end;
+function cantidadImpar(a: arbol): integer;
+begin
+	if(a = nil) the begin //caso base --- > llegue al final
+		cantidadImpar:= 0;
+	end 
+	else begin
+		cantidadImpar:= cantidadImpar(a^.HI) + cantidadImpar(a^.HD);
+		
+		if not( a^.ele.legajo MOD 2 = 0) then begin
+			// es impar
+			cantidadImpar:= cantidadImpar + 1;
+		end;
+	end;
+end;
+procedure informarNota(a: arbol);
 var
+	aprobados: integer;
+	aux: lista;
+begin
+	if(a <> nil) then begin
+		aprobados:= 0;
+		aux:= a^.ele.lista;
+		while(aux <> nil) do begin
+			if(aux.nota > 4) then begin
+				aprobados:= aprobados + 1;
+			end;
+			aux:= aux^.sig;
+		end;
+		writeln('legajo: ', a^.ele.legajo, ' finales aprobados: ', aprobados);
+		informarNota(a^.HI);
+		informarNota(a^.HD);
+	end;
+end;
+var
+	cant: integer;
 	arbol1: arbol;
 begin
 	arbol1:= nil;
 	cargarArbol(arbol1);
+	cant:= 0;
+	cantidadLegajoImpar(arbol1, cant);
+	writeln(cant);
 end;

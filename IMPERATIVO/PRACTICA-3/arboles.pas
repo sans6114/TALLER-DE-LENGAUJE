@@ -25,14 +25,68 @@ begin
 	end;
 
 end;
+function minimo(a: arbol):integer;
+begin
+	if(a^.HI = nil) then begin
+		minimo:= a^.ele; //---> cuando lleguemos al ultimo nodo del lado izquierdo lo devolveremos a la llamada anterior.
+	end	
+	else begin
+		minimo:= minimo(a^.HI); // llamada recursiva
+	end;
+end;
+function minimoNodo(a: arbol): arbol; // funcion que retorna el nodo con el valor minimo.
+begin
+	if(a = nil ) then begin //caso en que el arbol este vacion, si se verifica antes de llamar a la funcion esta linea esta de mas.
+		minimoNodo:= nil;
+	end
+	else if(a^.HI = nil) then begin
+		minimoNodo:= a;
+	end
+	else begin
+		minimoNodo:= minimoNodo(a^.HI);
+	end;
+end;
+function maximo(a: arbol): integer;
+begin
+	if(a^.HD = nil) then begin
+		maximo:= a^.ele;
+	end 
+	else begin
+		maximo:= maximo(a^.HD);
+	end;
+end;
+function buscar(a: arbol; x: integer): boolean;
+begin
+	if(a = nil) then begin
+		buscar:= false;
+	end
+	else begin
+		if(a^.ele = x) then begin
+			buscar:= true;
+		end
+		else if(x < a^.ele) then begin // llamada recursiva hacia izq
+			buscar:= buscar(a^.HI, x);
+		end
+		else begin
+			buscar:= buscar(a^.HD, x);
+		end;
+	end;
+end;
 var
 	a: arbol;
 	num: integer;
+	ok: boolean;
 begin
 	a:= nil; // indicamos que el arbol no posee ningun hijo hasta este punto (arbol vacio)
 	read(num);
 	while(num <> 50) do begin
 		agregar(a, num); // ----> llamamos a modulo encargado de la carga de hijos para dicho arbol "a"
-		read(num;)
+		read(num);
 	end;
+	// en este punto poseemos un arbol cargado(si se ingresaron numeros que no sean 50)
+	writeln(minimo(a));// ---> funcion que devuelve el minimo entero dentro de nuestro arbol 
+	minimoNodo(a);
+	writeln(maximo(a));
+	ok:= buscar(a, 10);
+	writeln(ok); // ---> esta el valor 10 en el arbol?
 end.
