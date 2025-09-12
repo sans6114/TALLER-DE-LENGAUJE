@@ -116,7 +116,7 @@ begin
 		aprobados:= 0;
 		aux:= a^.ele.lista;
 		while(aux <> nil) do begin
-			if(aux.nota > 4) then begin
+			if(aux.ele.nota > 4) then begin
 				aprobados:= aprobados + 1;
 			end;
 			aux:= aux^.sig;
