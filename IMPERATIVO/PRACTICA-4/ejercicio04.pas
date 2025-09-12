@@ -36,6 +36,15 @@ type
 		HI: arbol2;
 		HD: arbol2;
 	end;
+	datosListaISBN = record 
+		ISBN: integer;
+		vecesPrestadas: integer;
+	end;
+	listaISBN = ^nodoListaISBN;
+	nodoListaISBN = record 
+		ele: datosListaISBN;
+		sig: listaISBN;
+	end;
 procedure leerP(var p: prestamo);
 begin
 	writeln('ingrese el ISBN (IDENTIFICADOR) del libro que se presto: ');
@@ -169,9 +178,45 @@ begin
 		cantidadPorSocio2:= contadorDeNodos(a^.ele.lista, socio) + cantidadPorSocio2(a^.HI, socio) + cantidadPorSocio2(a^.HD, socio);
 	end;
 end;
+procedure agregarListaISBN(var l: listaISBN; ISBN: integer);
+var
+	nuevo: listaISBN;
+begin
+	new(nuevo);
+	nuevo^.ele.ISBN:= ISBN;
+	nuevo^.ele.vecesPrestadas:= 1;
+	nuevo^.sig:= l;
+	l:= nuevo; 
+end;
+procedure actualizarL(var l: listaISBN; ISBN: integer);
+var
+	encontre: boolean;
+	aux: listaISBN;
+begin
+	encontre:= false;
+	aux:= l;
+	while( (aux <> nil) and (not encontre)) do begin
+		if(l^.ele.ISBN = ISBN) then begin
+			l^.ele.vecesPrestadas:= l^.ele.vecesPrestadas + 1;
+			encontre:= true;
+		end;
+	end;
+	if(not encontre) then begin
+		agregarListaISBN(l, ISBN);
+	end;
+end;
+procedure crearListaISBN(a: arbol1; var l: listaISBN );
+begin
+	if(a<>nil) then begin
+		crearListaISBN(a^.HD, l); // ---> llamo primero a la rama derecha para agregar delante los mas grandes y luego los mas chicos.
+		actualizarL(l, a^.ele.ISBN);
+		crearListaISBN(a^.HI, l);	
+	end;
+end;
 var
 	arbolPrestamos: arbol1;
 	arbolISBN: arbol2;
+	listaISBNNueva: listaISBN;
 begin
 	arbolPrestamos:= nil;
 	arbolISBN:= nil;
@@ -180,4 +225,6 @@ begin
 	retornarMasPequeno(arbolISBN);
 	cantidadPorSocio(arbolPrestamos,10); // ejemplo con num de socio 10. el modulo retornara cuantos prestamos fueron solicitados con ese numSocio.
 	cantidadPorSocio2(arbolISBN, 10);
+	listaISBNNueva:= nil;
+	crearListaISBN(arbolPrestamos, listaISBNNueva);
 end.
