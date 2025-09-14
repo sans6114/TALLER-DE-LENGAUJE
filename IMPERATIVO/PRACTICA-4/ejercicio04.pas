@@ -169,6 +169,17 @@ begin
 	end;
 	contadorDeNodos:= cant;
 end;
+function contadorDeNodosISBN(l: lista): integer;
+var
+	cant: integer;
+begin
+	cant:= 0;
+	while (l <> nil) do begin
+		cant:= cant + 1;
+		l:= l^.sig;
+	end;
+	contadorDeNodosISBN:= cant;
+end;
 function cantidadPorSocio2(a: arbol2; socio: integer): integer;
 begin
 	if( a = nil)then begin
@@ -213,6 +224,25 @@ begin
 		crearListaISBN(a^.HI, l);	
 	end;
 end;
+procedure agregarListaISBN2(var l: listaISBN; ISBN: integer; cant: integer);
+var
+	nuevo: listaISBN;
+begin
+	new(nuevo);
+	nuevo^.ele.ISBN:= ISBN;
+	nuevo^.ele.vecesPrestadas:= cant;
+	nuevo^.sig:= l;
+	l:= nuevo;
+end;
+procedure crearListaISBN2(a: arbol2; l: listaISBN);
+var
+	vecesP: integer;
+begin
+	if(a<> nil) then begin
+		vecesP:= contadorDeNodosISBN(a^.ele.lista);
+		agregarListaISBN2(l, a^.ele.ISBN, vecesP);
+	end;
+end;
 var
 	arbolPrestamos: arbol1;
 	arbolISBN: arbol2;
@@ -227,4 +257,5 @@ begin
 	cantidadPorSocio2(arbolISBN, 10);
 	listaISBNNueva:= nil;
 	crearListaISBN(arbolPrestamos, listaISBNNueva);
+	crearListaISBN2(arbolISBN,listaISBNNueva); // reutilizo el mismo tipo de dato ya que me sirve (aclaro que piso los valores anteriores)
 end.
